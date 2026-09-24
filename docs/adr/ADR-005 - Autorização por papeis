@@ -1,0 +1,69 @@
+# ADR-005 - Precisamos falar sobre papéis de usuário (admin vs. usuário comum)
+
+## Status
+
+Pendente (implementação futura)
+
+## Data
+
+24/09/2026
+
+## Responsáveis
+
+Equipe EasyFood
+
+## A dor que apareceu
+
+Enquanto ajustávamos o `seed.js` para popular o banco com dados de teste mais realistas, esbarramos numa
+limitação: queríamos criar dois usuários iniciais, um representando um "administrador" e outro um "usuário
+comum" — mas o nosso model `User`, hoje, não tem nenhum campo que represente isso. Ele guarda só `name`, `email`,
+`password` e `createdAt`. Ou seja, a EasyFood autentica usuários (ADR-004), mas não os diferencia: todo mundo que
+tem uma conta enxerga e pode fazer exatamente as mesmas coisas.
+
+Isso levanta uma pergunta maior do que o `seed.js`: em algum momento, vamos querer que só administradores possam
+fazer certas ações (cadastrar restaurantes, remover um usuário, etc.), e hoje não temos como expressar isso no
+banco nem checar isso no código.
+
+## O que decidimos por enquanto
+
+Não vamos resolver isso agora. Para não sair alterando o schema do banco e criando uma nova migration só por
+causa de um script de seed, os dois usuários de teste (`admin@easyfood.com` e `usuario@easyfood.com`) foram
+criados com nomes que **sugerem** um papel — mas isso é puramente cosmético. Não existe, hoje, nenhuma verificação
+no código que trate esses dois usuários de forma diferente. Um "administrador" de nome só tem, na prática, os
+mesmos poderes que qualquer outro usuário autenticado.
+
+## Por que decidimos adiar
+
+Introduzir um sistema de papéis de verdade não é uma mudança pequena: envolve alterar o `schema.prisma`, gerar e
+rodar uma nova migration, decidir que valores esse campo pode assumir, e ajustar o middleware `verifyJWT` (ou
+criar um novo) para checar esse papel antes de liberar certas rotas. Isso é mais do que o escopo do trabalho de
+refatoração e do ajuste do `seed.js` pediam, e envolve decisões de modelagem que preferimos discutir com calma,
+em vez de tomar de forma apressada dentro de uma tarefa de outra natureza.
+
+## O que fica registrado para o futuro
+
+Quando formos implementar essa distinção de fato, algumas alternativas para considerar:
+
+1. **Campo simples de papel** (`role: String`, com valores como `"admin"` e `"user"`) — mais fácil de implementar,
+   mas menos flexível se um dia surgirem múltiplos papéis combinados.
+2. **Campo booleano** (`isAdmin: Boolean`) — mais simples ainda, mas só serve enquanto existirem apenas dois
+   níveis de acesso.
+3. **Tabela própria de papéis/permissões**, com relação para `User` — mais flexível para crescer, porém mais
+   complexa de implementar já nesse estágio do projeto.
+
+Qualquer uma dessas opções também vai exigir atualizar `authService` (para incluir o papel no payload do JWT ou
+consultá-lo a cada requisição) e o middleware de autenticação, para que rotas como `POST /restaurants` possam,
+futuramente, exigir não só um token válido, mas um token de um usuário com o papel certo.
+
+## Quando devemos revisitar isso
+
+Essa decisão de adiar deixa de fazer sentido assim que qualquer ação da API precisar, de fato, ser restrita a
+administradores — e não apenas a "qualquer usuário autenticado". Nesse momento, uma das alternativas listadas
+acima deve ser escolhida e implementada, substituindo a distinção cosmética usada hoje no `seed.js`.
+
+## Como essa história se encaixa
+
+Esta ADR nasce diretamente de um ponto levantado na ADR-004, que já previa a possibilidade de "diferentes níveis
+de permissão" como um gatilho de revisão futura. Ela também documenta por que o `seed.js` atual cria dois
+usuários com nomes de "administrador" e "usuário comum" sem que essa diferença tenha, hoje, qualquer efeito real
+no comportamento da API.

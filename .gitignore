@@ -1,0 +1,11 @@
+# Arquivos de variáveis de ambiente e banco local
+.env
+*.db
+*.db-journal
+
+# Banco de dados local do Prisma
+prisma/dev.db
+prisma/dev.db-journal 
+
+# Pastas de dependências
+node_modules/

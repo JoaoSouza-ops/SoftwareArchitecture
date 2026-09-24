@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EasyFood — Guia gastronômico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papel:#F5F0E1; --papel-linha:#e7dfc8;
+  --tinta:#16241A; --sage:#69735C;
+  --musgo:#1F3B24; --musgo-2:#2C5233;
+  --brasa:#CC5A2C; --brasa-2:#B14A21;
+  --card:#FFFDF6; --linha:#DED5BB;
+  --mostarda:#E3A73A;
+  --erro:#A3200F; --ok:#2C6A31;
+  --display:'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --texto:'Work Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+:root:not([data-theme="light"]){}
+:root[data-theme="dark"]{
+  --papel:#131A13; --papel-linha:#1d2a1c;
+  --tinta:#F1EEE1; --sage:#9AA68A;
+  --musgo:#7FC28C; --musgo-2:#9CD4A5;
+  --card:#1A2318; --linha:#2B3A28;
+  --brasa:#E37A4B;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none !important}
+html{scroll-padding-top:20px}
+body{
+  margin:0; background:var(--papel); color:var(--tinta); font-family:var(--texto);
+  line-height:1.5; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  background-image:linear-gradient(var(--papel-linha) 1px,transparent 1px);
+  background-size:100% 42px;
+  transition:background-color .2s, color .2s;
+}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+:focus-visible{outline:3px solid var(--brasa); outline-offset:2px}
+a{color:inherit}
+.envelope{max-width:1180px;margin:0 auto;padding:0 24px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--sage)}
+.eyebrow .ponto{width:6px;height:6px;border-radius:50%;background:var(--brasa)}
+
+/* Masthead */
+header.masthead{position:sticky;top:0;z-index:20;background:var(--papel);border-bottom:1px solid var(--linha)}
+.masthead-inner{display:flex;align-items:center;gap:28px;padding:16px 24px}
+.marca{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--tinta);margin-right:auto}
+.marca .selo{width:34px;height:34px;border-radius:9px;background:var(--brasa);color:#fff;display:grid;place-items:center;font-family:var(--display);font-size:1.3rem}
+.marca strong{font-family:var(--display);font-size:1.4rem;font-weight:400}
+.marca span{display:block;font-size:.65rem;letter-spacing:.1em;color:var(--sage);font-weight:600}
+nav.principal{display:flex;gap:22px;font-weight:500;font-size:.95rem}
+nav.principal a{text-decoration:none;color:var(--sage)}
+nav.principal a:hover{color:var(--tinta)}
+.tema{display:inline-flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--linha);border-radius:999px;padding:5px 10px;cursor:pointer;color:var(--sage);font-size:.9rem}
+.btn{border:0;border-radius:999px;padding:10px 20px;font:600 .95rem var(--texto);cursor:pointer;transition:background-color .15s,color .15s,border-color .15s}
+.btn-musgo{background:var(--musgo);color:#fff}
+.btn-musgo:hover{background:var(--musgo-2)}
+.btn-linha{background:transparent;border:1.5px solid var(--tinta);color:var(--tinta)}
+.btn-linha:hover{background:rgba(0,0,0,.05)}
+.btn-brasa{background:var(--brasa);color:#fff}
+.btn-brasa:hover{background:var(--brasa-2)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn-sm{padding:8px 14px;font-size:.88rem}
+
+/* Hero */
+.faixa-hero{padding:56px 0 40px;border-bottom:1px solid var(--linha)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:48px;align-items:start}
+h1.titulo{font-family:var(--display);font-weight:400;font-size:clamp(2.6rem,6vw,4.4rem);line-height:1.03;margin:18px 0 0}
+h1.titulo em{color:var(--brasa);font-style:italic}
+.sub{max-width:46ch;color:var(--sage);font-size:1.08rem;margin:16px 0 26px}
+.busca{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--linha);border-radius:999px;padding:6px 8px 6px 18px;max-width:460px}
+.busca svg{flex-shrink:0;opacity:.6}
+.busca input{border:0;background:transparent;font:400 1rem var(--texto);color:var(--tinta);flex:1;min-width:0;padding:8px 0}
+.busca input:focus{outline:0}
+.filtros{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:22px}
+.chip{padding:7px 15px;border:1.5px solid var(--linha);border-radius:999px;background:var(--card);color:var(--tinta);font:600 .88rem var(--texto);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--brasa);border-color:var(--brasa);color:#fff}
+.ordenacao{margin-left:auto;font-size:.85rem;color:var(--sage)}
+.ordenacao strong{color:var(--tinta)}
+
+/* Card conta (hero) */
+.painel{background:var(--card);border:1px solid var(--linha);border-radius:16px;padding:22px}
+.painel-cab{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.painel h2{font-family:var(--display);font-weight:400;font-size:1.5rem;margin:0}
+.painel .marcador{font-size:.7rem;font-weight:700;letter-spacing:.08em;color:var(--sage)}
+.painel p.dica{color:var(--sage);font-size:.92rem;margin:6px 0 18px}
+.painel .acoes{display:flex;gap:8px}
+.painel .acoes .btn{flex:1}
+.sessao-ativa{display:none}
+.sessao-ativa p{margin:0 0 14px;font-size:.95rem}
+.sessao-ativa strong{font-family:var(--display);font-size:1.2rem;font-style:italic;display:block;margin-top:2px}
+
+/* Faixas de conteúdo */
+.faixa{padding:40px 0;border-bottom:1px solid var(--linha)}
+.faixa-cab{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px;gap:16px;flex-wrap:wrap}
+.faixa h3{font-family:var(--display);font-weight:400;font-size:2rem;margin:6px 0 0}
+.faixa-cab .contagem{color:var(--sage);font-size:.9rem;white-space:nowrap}
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.cartao{background:var(--card);border:1px solid var(--linha);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.selo-cartao{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-family:var(--display);font-size:1.3rem;color:#fff}
+.cartao .nome{font-weight:600;font-size:1.05rem;margin:0}
+.cartao .categoria{color:var(--sage);font-size:.85rem;margin:0}
+.nota{align-self:flex-start;margin-top:auto;background:var(--tinta);color:var(--mostarda);font-weight:700;font-variant-numeric:tabular-nums;padding:3px 11px;border-radius:999px;font-size:.9rem}
+.vazio{color:var(--sage);padding:20px 0}
+
+/* Formulário de cadastro */
+.faixa-form .envelope{max-width:640px}
+.campo{margin-bottom:14px}
+.campo label{display:block;font-weight:600;font-size:.9rem;margin-bottom:5px}
+.campo input{width:100%;padding:11px 13px;border:1.5px solid var(--linha);border-radius:9px;background:var(--card);color:var(--tinta);font:400 1rem var(--texto)}
+.aviso{min-height:1.3em;margin:10px 0 0;font-size:.9rem;font-weight:600}
+.aviso.erro{color:var(--erro)} .aviso.ok{color:var(--ok)}
+fieldset{border:0;padding:0;margin:0;min-width:0}
+fieldset[disabled]{opacity:.5}
+.trava{display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--card);border:1px dashed var(--linha);border-radius:12px;padding:16px 18px;margin-bottom:18px}
+.trava p{margin:0;font-size:.92rem;color:var(--sage)}
+
+/* Modal de conta */
+.veu{position:fixed;inset:0;background:rgba(20,15,10,.42);display:flex;align-items:center;justify-content:center;padding:20px;z-index:40}
+.modal{background:var(--card);border-radius:18px;max-width:400px;width:100%;padding:28px;position:relative}
+.modal-fechar{position:absolute;top:14px;right:14px;background:none;border:0;font-size:1.3rem;cursor:pointer;color:var(--sage);line-height:1}
+.modos{display:flex;gap:8px;margin:18px 0 16px}
+
+footer{padding:30px 24px;text-align:center;color:var(--sage);font-size:.85rem}
+
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:1fr}
+  .masthead-inner{flex-wrap:wrap;row-gap:10px}
+  nav.principal{order:3;width:100%;justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <a class="marca" href="#topo">
+      <span class="selo" aria-hidden="true">E</span>
+      <span><strong>EasyFood</strong><span>Guia gastronômico</span></span>
+    </a>
+    <nav class="principal">
+      <a href="#explorar">Explorar</a>
+      <a href="#categorias">Categorias</a>
+      <a href="#cadastrar">Cadastrar</a>
+    </nav>
+    <button class="tema" id="btnTema" type="button" aria-pressed="false">
+      <span aria-hidden="true">☀︎</span><span class="sr-only">Alternar tema</span><span aria-hidden="true">☾</span>
+    </button>
+    <button class="btn btn-musgo btn-sm" id="btnConta" type="button">Entrar</button>
+  </div>
+</header>
+
+<main id="topo">
+  <section class="faixa-hero">
+    <div class="envelope hero-grid">
+      <div>
+        <span class="eyebrow"><span class="ponto"></span> Seleção local · <span id="totalGeral">9</span> lugares</span>
+        <h1 class="titulo">A cidade <em>come</em><br>por aqui.</h1>
+        <p class="sub">Descubra restaurantes por categoria, compare notas e encontre sua próxima mesa.</p>
+
+        <label class="sr-only" for="busca">Buscar por nome</label>
+        <div class="busca">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="busca" type="search" placeholder="Buscar por nome…" autocomplete="off">
+        </div>
+
+        <div class="filtros" id="filtros" role="group" aria-label="Filtrar por categoria">
+          <span class="ordenacao">Ordenado por <strong>nota</strong> e nome</span>
+        </div>
+      </div>
+
+      <aside class="painel" id="painelConta">
+        <div id="blocoAcesso">
+          <div class="painel-cab"><h2>Sua mesa</h2><span class="marcador">CONTA</span></div>
+          <p class="dica">Entre para cadastrar os seus restaurantes favoritos no guia.</p>
+          <div class="acoes">
+            <button class="btn btn-musgo" type="button" data-abrir-modal="entrar">Entrar</button>
+            <button class="btn btn-linha" type="button" data-abrir-modal="registro">Criar conta</button>
+          </div>
+        </div>
+        <div class="sessao-ativa" id="blocoSessao">
+          <p>Você está na mesa como<strong id="nomeLogado"></strong></p>
+          <button class="btn btn-linha" id="btnSair" type="button">Sair</button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <div id="faixas"></div>
+
+  <section class="faixa faixa-form" id="cadastrar">
+    <div class="envelope">
+      <span class="eyebrow"><span class="ponto"></span> Contribua</span>
+      <h3>Adicionar um lugar</h3>
+      <div class="trava" id="trava">
+        <p>Entre na sua conta para cadastrar um novo restaurante.</p>
+        <button class="btn btn-brasa btn-sm" type="button" data-abrir-modal="entrar">Entrar</button>
+      </div>
+      <form id="formRestaurante">
+        <fieldset id="camposRestaurante" disabled>
+          <div class="campo"><label for="rNome">Nome</label><input id="rNome" type="text" required></div>
+          <div class="campo"><label for="rCategoria">Categoria</label><input id="rCategoria" type="text" placeholder="Ex.: Pizza" required></div>
+          <div class="campo"><label for="rNota">Nota (de 0 a 5)</label><input id="rNota" type="number" step="0.1" min="0" max="5" required></div>
+          <button class="btn btn-brasa" type="submit">Cadastrar restaurante</button>
+        </fieldset>
+      </form>
+      <p id="avisoRestaurante" class="aviso" role="status"></p>
+    </div>
+  </section>
+
+  <footer>EasyFood — protótipo visual com dados fictícios, para orientar a implementação real da interface.</footer>
+</main>
+
+<div class="veu" id="veuModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloModal">
+    <button class="modal-fechar" id="fecharModal" aria-label="Fechar">✕</button>
+    <h2 id="tituloModal" style="font-family:var(--display);font-weight:400;margin:0 0 4px">Sua mesa</h2>
+    <p class="dica" style="color:var(--sage);margin:0;font-size:.92rem">Acesse para favoritar e cadastrar restaurantes.</p>
+    <div class="modos" role="group" aria-label="Escolha uma opção">
+      <button class="btn btn-linha btn-sm" type="button" data-modo="entrar" aria-pressed="true">Entrar</button>
+      <button class="btn btn-linha btn-sm" type="button" data-modo="registro" aria-pressed="false">Criar conta</button>
+    </div>
+    <form id="formAcesso" novalidate>
+      <div class="campo" id="campoNome" hidden><label for="cNome">Nome</label><input id="cNome" type="text" autocomplete="name"></div>
+      <div class="campo"><label for="cEmail">E-mail</label><input id="cEmail" type="email" autocomplete="email" required></div>
+      <div class="campo"><label for="cSenha">Senha</label><input id="cSenha" type="password" autocomplete="current-password" required></div>
+      <button class="btn btn-musgo" style="width:100%" type="submit" id="btnAcesso">Entrar</button>
+    </form>
+    <p id="avisoConta" class="aviso" role="status"></p>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+
+  // Dados fictícios — apenas para demonstrar os estados da interface.
+  // Os campos seguem exatamente o formato real da API (name, category, rating).
+  let restaurantes = [
+    { name: 'Pizzaria Napoli', category: 'Pizza', rating: 4.5 },
+    { name: 'Sushi Express', category: 'Japonesa', rating: 4.8 },
+    { name: 'Sabor Mineiro', category: 'Brasileira', rating: 4.3 },
+    { name: 'Doce Encanto', category: 'Sobremesas', rating: 4.7 },
+    { name: 'Espeto de Ouro', category: 'Street food', rating: 4.1 },
+    { name: 'Cantina della Nonna', category: 'Pizza', rating: 4.6 },
+    { name: 'Yakitori do Bairro', category: 'Japonesa', rating: 4.4 },
+    { name: 'Feijão com Arte', category: 'Brasileira', rating: 4.0 },
+    { name: 'Carrinho do Zé', category: 'Street food', rating: 3.9 }
+  ];
+
+  const cores = ['#1F3B24', '#CC5A2C', '#69735C', '#8A6D3B', '#3B5A70'];
+  const corPara = (t) => cores[[...t].reduce((a, c) => a + c.charCodeAt(0), 0) % cores.length];
+
+  let categoriaAtiva = '';
+  let termoBusca = '';
+  let logado = false;
+  let nomeUsuario = '';
+  let modoModal = 'entrar';
+
+  function aviso(id, texto = '', tipo = '') {
+    const el = $(id);
+    el.textContent = texto;
+    el.className = tipo ? `aviso ${tipo}` : 'aviso';
+  }
+
+  function formatarNota(v) { return Number(v ?? 0).toFixed(1).replace('.', ','); }
+
+  function renderFiltros() {
+    const categorias = [...new Set(restaurantes.map(r => r.category))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    if (categoriaAtiva && !categorias.includes(categoriaAtiva)) categoriaAtiva = '';
+    const caixa = $('filtros');
+    caixa.querySelectorAll('.chip').forEach(n => n.remove());
+    const ordenacao = caixa.querySelector('.ordenacao');
+    [['', 'Todos'], ...categorias.map(c => [c, c])].forEach(([valor, rotulo]) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'chip'; b.textContent = rotulo;
+      b.setAttribute('aria-pressed', String(valor === categoriaAtiva));
+      b.addEventListener('click', () => { categoriaAtiva = valor; renderFiltros(); renderFaixas(); });
+      caixa.insertBefore(b, ordenacao);
+    });
+  }
+
+  function renderFaixas() {
+    const raiz = $('faixas');
+    raiz.replaceChildren();
+    $('totalGeral').textContent = restaurantes.length;
+
+    const filtrados = restaurantes.filter(r =>
+      (!categoriaAtiva || r.category === categoriaAtiva) &&
+      (!termoBusca || r.name.toLowerCase().includes(termoBusca))
+    );
+
+    if (filtrados.length === 0) {
+      const p = document.createElement('p');
+      p.className = 'vazio';
+      p.textContent = 'Nenhum restaurante encontrado. Ajuste a busca ou tente outra categoria.';
+      raiz.appendChild(document.createElement('div')).className = 'envelope';
+      raiz.lastChild.appendChild(p);
+      return;
+    }
+
+    const grupos = new Map();
+    filtrados.forEach(r => { if (!grupos.has(r.category)) grupos.set(r.category, []); grupos.get(r.category).push(r); });
+
+    [...grupos.keys()].sort((a, b) => a.localeCompare(b, 'pt-BR')).forEach(categoria => {
+      const lista = grupos.get(categoria).sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0) || a.name.localeCompare(b.name, 'pt-BR'));
+      const sec = document.createElement('section');
+      sec.className = 'faixa';
+      sec.innerHTML = `<div class="envelope">
+        <div class="faixa-cab">
+          <div><span class="eyebrow"><span class="ponto"></span> Seleção da casa</span><h3>${categoria}</h3></div>
+          <span class="contagem">${lista.length} ${lista.length === 1 ? 'resultado' : 'resultados'}</span>
+        </div>
+        <div class="grade"></div>
+      </div>`;
+      const grade = sec.querySelector('.grade');
+      lista.forEach(r => {
+        const c = document.createElement('article');
+        c.className = 'cartao';
+        c.innerHTML = `
+          <span class="selo-cartao" style="background:${corPara(r.name)}" aria-hidden="true">${r.name.charAt(0)}</span>
+          <p class="nome">${r.name}</p>
+          <p class="categoria">${r.category}</p>
+          <span class="nota" aria-label="Nota ${formatarNota(r.rating)} de 5">★ ${formatarNota(r.rating)}</span>`;
+        grade.appendChild(c);
+      });
+      raiz.appendChild(sec);
+    });
+  }
+
+  /* Tema */
+  function aplicarTema(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    $('btnTema').setAttribute('aria-pressed', String(t === 'dark'));
+    try { localStorage.setItem('ef_tema', t); } catch (e) {}
+  }
+  $('btnTema').addEventListener('click', () => {
+    const atual = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    aplicarTema(atual);
+  });
+  try {
+    const salvo = localStorage.getItem('ef_tema');
+    if (salvo) aplicarTema(salvo);
+  } catch (e) {}
+
+  /* Conta: modal e sessão (simulados — sem chamadas reais à API) */
+  function atualizarSessao() {
+    $('blocoAcesso').style.display = logado ? 'none' : '';
+    $('blocoSessao').style.display = logado ? '' : 'none';
+    $('nomeLogado').textContent = nomeUsuario;
+    $('camposRestaurante').disabled = !logado;
+    $('trava').hidden = logado;
+    $('btnConta').textContent = logado ? nomeUsuario.split(' ')[0] : 'Entrar';
+  }
+
+  function abrirModal(modo) {
+    modoModal = modo;
+    definirModoModal(modo);
+    $('veuModal').hidden = false;
+    $('cEmail').focus();
+  }
+  function fecharModal() { $('veuModal').hidden = true; $('formAcesso').reset(); aviso('avisoConta'); }
+
+  function definirModoModal(modo) {
+    modoModal = modo;
+    const registro = modo === 'registro';
+    document.querySelectorAll('[data-modo]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.modo === modo)));
+    $('campoNome').hidden = !registro;
+    $('cNome').required = registro;
+    $('btnAcesso').textContent = registro ? 'Criar conta' : 'Entrar';
+    aviso('avisoConta');
+  }
+
+  document.querySelectorAll('[data-abrir-modal]').forEach(b => b.addEventListener('click', () => abrirModal(b.dataset.abrirModal)));
+  document.querySelectorAll('[data-modo]').forEach(b => b.addEventListener('click', () => definirModoModal(b.dataset.modo)));
+  $('fecharModal').addEventListener('click', fecharModal);
+  $('veuModal').addEventListener('click', (e) => { if (e.target === $('veuModal')) fecharModal(); });
+  $('btnConta').addEventListener('click', () => { if (!logado) abrirModal('entrar'); });
+
+  $('formAcesso').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nome = $('cNome').value.trim();
+    const email = $('cEmail').value.trim();
+    const senha = $('cSenha').value;
+    if (!email || !senha || (modoModal === 'registro' && !nome)) {
+      aviso('avisoConta', 'Preencha todos os campos para continuar.', 'erro');
+      return;
+    }
+    logado = true;
+    nomeUsuario = modoModal === 'registro' ? nome : email.split('@')[0];
+    atualizarSessao();
+    fecharModal();
+  });
+
+  $('btnSair').addEventListener('click', () => { logado = false; nomeUsuario = ''; atualizarSessao(); });
+
+  $('formRestaurante').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nome = $('rNome').value.trim();
+    const categoria = $('rCategoria').value.trim();
+    const nota = parseFloat($('rNota').value);
+    if (!nome || !categoria) { aviso('avisoRestaurante', 'Nome e categoria são obrigatórios.', 'erro'); return; }
+    restaurantes.push({ name: nome, category: categoria, rating: isNaN(nota) ? 0 : nota });
+    $('formRestaurante').reset();
+    aviso('avisoRestaurante', 'Restaurante cadastrado.', 'ok');
+    renderFiltros(); renderFaixas();
+  });
+
+  $('busca').addEventListener('input', (e) => { termoBusca = e.target.value.trim().toLowerCase(); renderFaixas(); });
+
+  renderFiltros();
+  renderFaixas();
+  atualizarSessao();
+})();
+</script>
+</body>
+</html>
