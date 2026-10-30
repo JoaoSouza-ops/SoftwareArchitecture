@@ -9,3 +9,9 @@ prisma/dev.db-journal
 
 # Pastas de dependências
 node_modules/
+
+# Arquivos de upload gerados dinamicamente (preserva apenas a estrutura de pastas)
+uploads/*
+!uploads/dishes/
+uploads/dishes/*
+!uploads/dishes/.gitkeep
