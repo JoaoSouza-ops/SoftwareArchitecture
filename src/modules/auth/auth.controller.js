@@ -1,10 +1,15 @@
 import { registrarUsuario, autenticarUsuario } from './auth.service.js';
 
 export async function registrar(requisicao, resposta) {
-  const { name: nome, email, password: senha } = requisicao.body;
+  const nome = requisicao.body?.name || requisicao.body?.nome;
+  const email = requisicao.body?.email;
+  const senha = requisicao.body?.password || requisicao.body?.senha;
 
-  if (!nome || !email || !senha) {
-    return resposta.status(400).json({ error: 'Nome, e-mail e senha são obrigatórios' });
+  if (! nome || !email || !senha) {
+    return resposta.status(400).json({
+      error: 'Nome, e-mail e senha são obrigatórios',
+      detalhes: 'Certifique-se de enviar name (ou nome), email e password (ou senha)'
+    });
   }
 
   try {
@@ -20,10 +25,14 @@ export async function registrar(requisicao, resposta) {
 }
 
 export async function autenticar(requisicao, resposta) {
-  const { email, password: senha } = requisicao.body;
+  const email = requisicao.body?.email;
+  const senha = requisicao.body?.password || requisicao.body?.senha;
 
   if (!email || !senha) {
-    return resposta.status(400).json({ error: 'E-mail e senha são obrigatórios' });
+    return resposta.status(400).json({
+      error: 'E-mail e senha são obrigatórios',
+      detalhes: 'Certifique-se de enviar o body com email e password (ou senha)'
+    });
   }
 
   try {

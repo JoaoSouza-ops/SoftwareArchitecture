@@ -11,14 +11,23 @@ export async function buscarRestaurantes(requisicao, resposta) {
 }
 
 export async function cadastrarRestaurante(requisicao, resposta) {
-    const { name: nome, category: categoria } = requisicao.body;
+    const nome = requisicao.body?.name || requisicao.body?.nome;
+    const categoria = requisicao.body?.category || requisicao.body?.categoria;
+    const avaliacao = requisicao.body?.rating !== undefined ? requisicao.body?.rating : requisicao.body?.avaliacao;
 
     if (!nome || !categoria) {
-        return resposta.status(400).json({ erro: "Nome e categoria são obrigatórios" });
+        return resposta.status(400).json({
+            erro: "Nome e categoria são obrigatórios",
+            detalhes: "Envie name (ou nome) e category (ou categoria)"
+        });
     }
 
     try {
-        const novoRestaurante = await criarRestaurante(requisicao.body);
+        const novoRestaurante = await criarRestaurante({
+            name: nome,
+            category: categoria,
+            rating: avaliacao
+        });
         return resposta.status(201).json(novoRestaurante);
     } catch (erro) {
         console.error("Erro ao cadastrar restaurante:", erro.message);

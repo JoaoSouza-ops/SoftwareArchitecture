@@ -8,6 +8,7 @@ const diretorioAtual = path.dirname(fileURLToPath(import.meta.url));
 const aplicacao = express();
 
 aplicacao.use(express.json());
+aplicacao.use(express.urlencoded({ extended: true }));
 aplicacao.use(express.static(path.join(diretorioAtual, '../public')));
 
 aplicacao.use('/auth', rotasAutenticacao);
